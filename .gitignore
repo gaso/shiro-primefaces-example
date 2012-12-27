@@ -10,3 +10,4 @@ gfembed*
 nb-configuration.xml
 .DS_Store
 *.iml
+/build/

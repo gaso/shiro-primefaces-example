@@ -1,5 +1,6 @@
 /**
  * Very simple bean that authenticates the user via Apache Shiro, using JSF
+ *
  * @author Daniel Mascarenhas
  */
 package org.example.shiro.bean.security;
@@ -10,20 +11,18 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
-@Named
-@Stateless
+@ManagedBean(name = "shiroLoginBean")
 @ViewScoped
 public class ShiroLoginBean implements Serializable {
-    private static final Logger log = LoggerFactory.getLogger(ShiroLoginBean.class);
 
+    private static final Logger log = LoggerFactory.getLogger(ShiroLoginBean.class);
     private String username;
     private String password;
     private Boolean rememberMe;
@@ -37,41 +36,42 @@ public class ShiroLoginBean implements Serializable {
     public void doLogin() {
         Subject subject = SecurityUtils.getSubject();
 
+        
         UsernamePasswordToken token = new UsernamePasswordToken(getUsername(), getPassword(), getRememberMe());
 
         try {
             subject.login(token);
-
+            
             if (subject.hasRole("admin")) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("admin/index.xhtml");
-            }
-            else {
+            } else {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             }
-        }
-        catch (UnknownAccountException ex) {
+        } catch (UnknownAccountException ex) {
             facesError("Unknown account");
             log.error(ex.getMessage(), ex);
-        }
-        catch (IncorrectCredentialsException ex) {
+        } catch (IncorrectCredentialsException ex) {
             facesError("Wrong password");
             log.error(ex.getMessage(), ex);
-        }
-        catch (LockedAccountException ex) {
+        } catch (LockedAccountException ex) {
             facesError("Locked account");
             log.error(ex.getMessage(), ex);
-        }
-        catch (AuthenticationException | IOException ex) {
+        } catch (AuthenticationException ex) {
+            facesError("No es posible Autenticarlo - Usuario o Contraseña Invalida " + ex.getMessage());
+            System.out.println(" AuthenticationException: " + ex);
+            ex.printStackTrace();
+            log.error(ex.getMessage(), ex);
+        } catch (IOException ex) {
             facesError("Unknown error: " + ex.getMessage());
             log.error(ex.getMessage(), ex);
-        }
-        finally {
+        } finally {
             token.clear();
         }
     }
 
     /**
      * Adds a new SEVERITY_ERROR FacesMessage for the ui
+     *
      * @param message Error Message
      */
     private void facesError(String message) {
@@ -91,6 +91,7 @@ public class ShiroLoginBean implements Serializable {
     }
 
     public void setPassword(String senha) {
+        System.out.println("pass : " + senha);
         this.password = senha;
     }
 

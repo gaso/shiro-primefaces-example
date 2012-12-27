@@ -8,10 +8,10 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
 import javax.faces.bean.ViewScoped;
-import javax.inject.Named;
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
-@Named
+@ManagedBean(name = "indexBean")
 @ViewScoped
 public class IndexBean implements Serializable {
     private Subject subject = SecurityUtils.getSubject();

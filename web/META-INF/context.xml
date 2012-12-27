@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/shiro_prime">
+
+<Resource name="jdbc/shiro-primefaces" auth="Container" type="javax.sql.DataSource"
+          username="shiro_demo"
+          password="testpass"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://localhost:5432/shiro_primefaces"
+          maxActive="20"
+          maxIdle="10"
+          validationQuery="select 1" /> 
+		  
+</Context>
